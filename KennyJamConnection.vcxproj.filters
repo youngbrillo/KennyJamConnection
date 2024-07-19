@@ -31,6 +31,9 @@
     <Filter Include="Source Files\scenes">
       <UniqueIdentifier>{1a622549-0080-469e-bdd3-ff9dd7390556}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\modules">
+      <UniqueIdentifier>{6c4cff94-719e-4c59-9402-bab69e755d46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -186,6 +189,12 @@
     <ClCompile Include="src\Script.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\core_module.cpp">
+      <Filter>Source Files\src\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\raylib_script_extensions.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lua\lapi.h">
@@ -327,6 +336,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Script.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\core_module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\raylib_script_extensions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

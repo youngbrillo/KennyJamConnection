@@ -177,8 +177,10 @@
     <ClCompile Include="lua\lvm.c" />
     <ClCompile Include="lua\lzio.c" />
     <ClCompile Include="src\Application.cpp" />
+    <ClCompile Include="src\core_module.cpp" />
     <ClCompile Include="src\Inspector.cpp" />
     <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\raylib_script_extensions.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene3D.cpp" />
     <ClCompile Include="src\Script.cpp" />
@@ -226,7 +228,9 @@
     <ClInclude Include="lua\lvm.h" />
     <ClInclude Include="lua\lzio.h" />
     <ClInclude Include="src\Application.h" />
+    <ClInclude Include="src\core_module.h" />
     <ClInclude Include="src\Inspector.h" />
+    <ClInclude Include="src\raylib_script_extensions.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Scene3D.h" />
     <ClInclude Include="src\Script.h" />
