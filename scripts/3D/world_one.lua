@@ -13,11 +13,11 @@ function onStart(scene, ecs)
 
     -- core.AddCube(ecs, raylib.Vector3():set(0,0.5,0),raylib.Vector3():set(1,1,1), raylib.Color():set(0xffffffff));
 
-    local bounds = 5;
-    for i = 1, 00, 1 do
-        local x = math.random(-bounds, bounds)
-        local y = math.random(-bounds, bounds)
-        local z = math.random(-bounds, bounds)
+    local bounds = 10;
+    for i = 1, 1000, 1 do
+        local x = math.random(-bounds, bounds) + math.random()
+        local y = math.random(-bounds, bounds) + math.random()
+        local z = math.random(-bounds, bounds) + math.random()
         local color = raylib.Color();
             color.r = math.random(0, 255)
             color.g = math.random(0, 255)
@@ -30,7 +30,7 @@ function onStart(scene, ecs)
         );
     end
 
-    for i = 1, 00, 1 do
+    for i = 1, 000, 1 do
         local x = math.random(-bounds, bounds)
         local y = math.random(-bounds, bounds)
         local z = math.random(-bounds, bounds)
@@ -46,13 +46,26 @@ function onStart(scene, ecs)
         );
     end
 
-    LoadModels(ecs)
+    -- LoadModels(ecs)
     scene.camera_mode = CAMERA_ORBITAL;
 
-    scene.draw_grid = true;
+    -- scene.draw_grid = true;
     scene.grid_slices = 12;
+    -- scene.postProcessor:AddShader("assets/shaders/grayscale.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/posterization.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/dream_vision.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/pixelizer.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/cross_hatching.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/cross_stitching.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/predator.fs");
+    scene.postProcessor:AddShader("assets/shaders/scanlines.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/fisheye.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/sobel.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/bloom.fs");
+    -- scene.postProcessor:AddShader("assets/shaders/blur.fs");
 end
-
+models = {};
+textures = {};
 function LoadModels(ecs)
     models = {
         {model =0, tindex=1, path="assets/models/city/building-sample-house-a.obj"},

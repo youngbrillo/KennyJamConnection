@@ -53,12 +53,12 @@ void Scene3D::fixedUpdate(const float& timestep)
 
 void Scene3D::draw()
 {
-
-
+	postProcessor.onBeginDraw();
 	BeginMode3D(scene_camera);
 		if (draw_grid) DrawGrid(grid_slices, grid_spacing);
 		core_module.draw3D(scene_camera);
 	EndMode3D();
+	postProcessor.onEndDraw();
 	core_module.drawUI();
 }
 
@@ -112,8 +112,9 @@ void Scene3D::Extend(lua_State* L)
 {
 	raylib::script_extend(L);
 	CoreModule::Extend(L);
-	
 	App::Extend(L);
+	PostProcessor::Extend(L);
+
 	luabridge::getGlobalNamespace(L)
 		.beginNamespace("flecs")
 			.beginClass<flecs::world>("world")
@@ -137,6 +138,7 @@ void Scene3D::Extend(lua_State* L)
 		.addData("grid_slices", &Scene3D::grid_slices)
 		.addData("grid_spacing", &Scene3D::grid_spacing)
 		.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
+		.addData("postProcessor", &Scene3D::postProcessor)
 		.endClass();
 }
 static int results = SceneManager::AddScenesFromDirectory("scripts/3D", "3D Scenes", Scene3D::Register);

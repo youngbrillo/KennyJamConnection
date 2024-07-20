@@ -3,6 +3,8 @@
 #include "Script.h"
 #include "flecs.h"
 #include "core_module.h"
+#include "post_processor.h"
+
 class Scene3D : public Scene
 {
 public:
@@ -14,6 +16,7 @@ public:
 	bool draw_grid = false;
 	int grid_slices = 10, grid_spacing = 1;
 	bool lock_cursor_to_screen = false;
+	PostProcessor postProcessor;
 public:
 	Scene3D(std::string name, std::string path);
 	virtual ~Scene3D();
