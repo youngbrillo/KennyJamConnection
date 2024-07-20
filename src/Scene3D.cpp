@@ -2,10 +2,15 @@
 #include <LuaBridge/LuaBridge.h>
 #include "Application.h"
 #include "raylib_script_extensions.h"
-
+#include "components3D.h"
 Scene3D::Scene3D(std::string name, std::string path)
 	: Scene(name, path)
 {
+	scene_camera.position = Vector3{ 10.0f, 10.0f, 10.0f }; // Camera position
+	scene_camera.target = Vector3{ 0.0f, 0.0f, 0.0f };      // Camera looking at point
+	scene_camera.up = Vector3{ 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
+	scene_camera.fovy = 45.0f;                                // Camera field-of-view Y
+	scene_camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 }
 
 Scene3D::~Scene3D()
@@ -45,6 +50,9 @@ void Scene3D::fixedUpdate(const float& timestep)
 
 void Scene3D::draw()
 {
+	UpdateCamera(&scene_camera, camera_mode);
+
+
 	BeginMode3D(scene_camera);
 		core_module.draw3D(scene_camera);
 	EndMode3D();
@@ -55,9 +63,19 @@ void Scene3D::poll()
 {
 	core_module.pollEvents();
 }
-
+#include <imgui.h>
 void Scene3D::Inspect()
 {
+	if (ImGui::TreeNode("Camera3D: main_camera"))
+	{
+		ImGui::DragFloat3("position", &scene_camera.position.x);
+		ImGui::DragFloat3("target", &scene_camera.target.x);
+		ImGui::SliderFloat3("up", &scene_camera.up.x, -1, 1);
+		ImGui::SliderFloat("fov",&scene_camera.fovy, -360, 360);
+		ImGui::SliderInt("projection", &scene_camera.projection, CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC, scene_camera.projection == 0 ? "PERSPECTIVE" : "ORTHOGRAPHIC");
+		ImGui::TreePop();
+	}
+
 	core_module.InspectComponents();
 
 }
@@ -95,7 +113,7 @@ void Scene3D::Extend(lua_State* L)
 		.endNamespace()
 		.beginClass<Scene3D>("Scene3D")
 			.addData("scene_camera", &Scene3D::scene_camera)
-			//.addData("ecs", &Scene3D::ecs)
+			.addData("camera_mode", &Scene3D::camera_mode)
 			.addData("core_module", &Scene3D::core_module)
 		.endClass();
 }

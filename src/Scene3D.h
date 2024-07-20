@@ -10,6 +10,7 @@ public:
 	Camera3D scene_camera;
 	flecs::world ecs;
 	CoreModule core_module;
+	int camera_mode = CAMERA_CUSTOM;
 public:
 	Scene3D(std::string name, std::string path);
 	virtual ~Scene3D();

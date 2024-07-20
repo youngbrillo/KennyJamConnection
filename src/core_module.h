@@ -6,12 +6,6 @@
 class CoreModule
 {
 public:
-	flecs::system draw2Dsystem;
-	flecs::system draw3Dsystem;
-	flecs::system drawUIsystem;
-	flecs::system pollSystem;
-	flecs::system inspectSystem;
-public:
 	CoreModule();
 	CoreModule(flecs::world& world);
 
@@ -22,7 +16,13 @@ public:
 	void drawUI();
 	void pollEvents();
 	void InspectComponents();
-
 	static void Extend(lua_State* L);
+
+protected:
+	flecs::system draw2Dsystem;
+	flecs::system draw3DCubes, draw3DSpheres, draw3DModels;
+	flecs::system drawUIsystem;
+	flecs::system pollSystem;
+	flecs::system inspectSystem;
 };
 

@@ -34,6 +34,9 @@
     <Filter Include="Source Files\src\modules">
       <UniqueIdentifier>{6c4cff94-719e-4c59-9402-bab69e755d46}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\components">
+      <UniqueIdentifier>{d26559cc-a4dd-4515-9c4e-3333988c3750}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -195,6 +198,12 @@
     <ClCompile Include="src\raylib_script_extensions.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\components3D.cpp">
+      <Filter>Source Files\src\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render3D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lua\lapi.h">
@@ -342,6 +351,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\raylib_script_extensions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\components3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Render3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
