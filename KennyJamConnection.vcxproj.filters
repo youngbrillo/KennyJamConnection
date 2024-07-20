@@ -37,6 +37,9 @@
     <Filter Include="Source Files\src\components">
       <UniqueIdentifier>{d26559cc-a4dd-4515-9c4e-3333988c3750}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\src\managers">
+      <UniqueIdentifier>{c772f2f1-a114-4d09-b250-b21acc6162f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -202,6 +205,12 @@
       <Filter>Source Files\src\components</Filter>
     </ClCompile>
     <ClCompile Include="src\Render3D.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -357,6 +366,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Render3D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\post_processor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ModelManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

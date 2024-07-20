@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "raylib_script_extensions.h"
 #include "components3D.h"
+#include "ModelManager.h"
+
 Scene3D::Scene3D(std::string name, std::string path)
 	: Scene(name, path)
 {
@@ -114,6 +116,7 @@ void Scene3D::Extend(lua_State* L)
 	CoreModule::Extend(L);
 	App::Extend(L);
 	PostProcessor::Extend(L);
+	ModelManager::Extend(L);
 
 	luabridge::getGlobalNamespace(L)
 		.beginNamespace("flecs")
