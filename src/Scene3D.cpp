@@ -35,10 +35,13 @@ void Scene3D::initialize()
 		script.run("onStart", this, &this->ecs);
 	}
 
+	//HideCursor();
+	EnableCursor();
 }
 
 void Scene3D::update(const float& dt)
 {
+	UpdateCamera(&scene_camera, camera_mode);
 	ecs.progress(dt);
 	core_module.update(dt);
 }
@@ -50,10 +53,10 @@ void Scene3D::fixedUpdate(const float& timestep)
 
 void Scene3D::draw()
 {
-	UpdateCamera(&scene_camera, camera_mode);
 
 
 	BeginMode3D(scene_camera);
+		if (draw_grid) DrawGrid(grid_slices, grid_spacing);
 		core_module.draw3D(scene_camera);
 	EndMode3D();
 	core_module.drawUI();
@@ -62,10 +65,25 @@ void Scene3D::draw()
 void Scene3D::poll()
 {
 	core_module.pollEvents();
+
+	if (IsKeyReleased(KEY_TAB))
+	{
+		lock_cursor_to_screen = !lock_cursor_to_screen;
+		if (lock_cursor_to_screen)  
+			DisableCursor();
+		else  
+			EnableCursor();
+	}
+
 }
+
+static const char* cam_modes[] = { "CAMERA_CUSTOM","CAMERA_FREE","CAMERA_ORBITAL","CAMERA_FIRST_PERSON","CAMERA_THIRD_PERSON" };
+
 #include <imgui.h>
 void Scene3D::Inspect()
 {
+	ImGui::SliderInt("camera mode", &camera_mode, CAMERA_CUSTOM, CAMERA_THIRD_PERSON, cam_modes[camera_mode]);
+
 	if (ImGui::TreeNode("Camera3D: main_camera"))
 	{
 		ImGui::DragFloat3("position", &scene_camera.position.x);
@@ -114,7 +132,11 @@ void Scene3D::Extend(lua_State* L)
 		.beginClass<Scene3D>("Scene3D")
 			.addData("scene_camera", &Scene3D::scene_camera)
 			.addData("camera_mode", &Scene3D::camera_mode)
-			.addData("core_module", &Scene3D::core_module)
+		.addData("core_module", &Scene3D::core_module)
+		.addData("draw_grid", &Scene3D::draw_grid)
+		.addData("grid_slices", &Scene3D::grid_slices)
+		.addData("grid_spacing", &Scene3D::grid_spacing)
+		.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
 		.endClass();
 }
 static int results = SceneManager::AddScenesFromDirectory("scripts/3D", "3D Scenes", Scene3D::Register);

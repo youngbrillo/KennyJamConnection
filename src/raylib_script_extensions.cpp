@@ -23,6 +23,13 @@ namespace raylib
 		return v;
 	}
 
+	//MATERIAL_MAP_DIFFUSE == 0
+	static Model* setModelTexture(Model* m, Texture2D texture, int mapIndex = 0, int material_map_index = MATERIAL_MAP_DIFFUSE)
+	{
+		m->materials[mapIndex].maps[material_map_index].texture = texture;
+
+		return m;
+	};
 }
 
 
@@ -106,7 +113,9 @@ void raylib::script_extend(lua_State* L)
 			.addData("min", &BoundingBox::min)
 			.addData("max", &BoundingBox::max)
 		.endClass()
-		.beginClass<Model>("Model").endClass()
+		.beginClass<Model>("Model")
+			.addFunction("AddTexture", &raylib::setModelTexture)
+		.endClass()
 		.addFunction("LoadModel", LoadModel)
 		.addFunction("LoadModelFromMesh", LoadModelFromMesh)
 		.addFunction("IsModelReady", IsModelReady)

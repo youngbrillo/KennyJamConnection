@@ -10,7 +10,10 @@ public:
 	Camera3D scene_camera;
 	flecs::world ecs;
 	CoreModule core_module;
-	int camera_mode = CAMERA_CUSTOM;
+	int camera_mode = CAMERA_CUSTOM; 
+	bool draw_grid = false;
+	int grid_slices = 10, grid_spacing = 1;
+	bool lock_cursor_to_screen = false;
 public:
 	Scene3D(std::string name, std::string path);
 	virtual ~Scene3D();
