@@ -19,8 +19,8 @@ public:
 	~PostProcessor();
 
 	void AddShader(const char* fragfilepath);
-	void onBeginDraw();
-	void onEndDraw();
+	void ApplyEffect();
+	void EndEffect();
 
 
 public:

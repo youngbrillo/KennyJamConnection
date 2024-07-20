@@ -36,14 +36,14 @@ void Scene3D::initialize()
 	{
 		script.run("onStart", this, &this->ecs);
 	}
-	//lightShader.Initialize(scene_camera);
-	//HideCursor();
+	lighting.Initialize("assets/shaders/shadowmap.vs", "assets/shaders/shadowmap.fs", 2048);
 	EnableCursor();
 }
 
 void Scene3D::update(const float& dt)
 {
 	UpdateCamera(&scene_camera, camera_mode);
+	lighting.Update(scene_camera, dt);
 	ecs.progress(dt);
 	core_module.update(dt);
 }
@@ -53,33 +53,56 @@ void Scene3D::fixedUpdate(const float& timestep)
 	core_module.fixedUpdate(timestep);
 }
 
-void Scene3D::predraw()
+void Scene3D::Render(Color& clearColor, DrawHook onInspect)
 {
-	//lightShader.Render(scene_camera);
+	BeginDrawing();
+		lighting.DrawShadowMap(clearColor, std::bind(&Scene3D::DrawWorld, this));
+
+		postProcessor.ApplyEffect();
+			ClearBackground(clearColor);
+			BeginMode3D(scene_camera);
+				DrawWorld();
+			EndMode3D();
+		postProcessor.EndEffect();
+
+	core_module.drawUI();
+	onInspect();
+	EndDrawing();
 }
 
-void Scene3D::draw()
+void Scene3D::DrawWorld()
 {
-	postProcessor.onBeginDraw();
-	BeginMode3D(scene_camera);
 		if (draw_grid) DrawGrid(grid_slices, grid_spacing);
 		core_module.draw3D(scene_camera);
 	EndMode3D();
-	postProcessor.onEndDraw();
-	core_module.drawUI();
 }
 
 void Scene3D::poll()
 {
 	core_module.pollEvents();
 
-	if (IsKeyReleased(KEY_TAB))
+	if (IsKeyReleased(KEY_TAB) && IsKeyDown(KEY_LEFT_SHIFT))
+	{
+		camera_mode++;
+		if (camera_mode > CAMERA_THIRD_PERSON)
+		{
+			camera_mode = CAMERA_CUSTOM;
+		}
+	}
+	else if  (IsKeyReleased(KEY_TAB) && !IsKeyDown(KEY_LEFT_SHIFT))
 	{
 		lock_cursor_to_screen = !lock_cursor_to_screen;
-		if (lock_cursor_to_screen)  
+		if (lock_cursor_to_screen)
 			DisableCursor();
-		else  
+		else
 			EnableCursor();
+	}
+	if (IsKeyReleased(KEY_GRAVE) )
+	{
+		postProcessor.current_shader++;
+
+		if (postProcessor.current_shader >= postProcessor.shaders.size())
+			postProcessor.current_shader = -1;
 	}
 
 }
@@ -100,6 +123,7 @@ void Scene3D::Inspect()
 		ImGui::SliderInt("projection", &scene_camera.projection, CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC, scene_camera.projection == 0 ? "PERSPECTIVE" : "ORTHOGRAPHIC");
 		ImGui::TreePop();
 	}
+	lighting.Inspect();
 
 	core_module.InspectComponents();
 

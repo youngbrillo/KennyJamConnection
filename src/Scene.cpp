@@ -120,3 +120,12 @@ SceneManager::~SceneManager()
 	entry_name_reverse_lookup.clear();
 	category_entry_lookup.clear();
 }
+
+void Scene::Render(Color& clearColor, DrawHook onInspect)
+{
+	BeginDrawing();
+		ClearBackground(clearColor);
+		DrawWorld();
+		onInspect(); //<--- Scene->Inspect is called inside this
+	EndDrawing();
+}

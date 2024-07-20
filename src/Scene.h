@@ -6,6 +6,9 @@
 #include <raylib/raylib.h>
 #include <raylib/raymath.h>
 #include <raylib/rlgl.h>
+
+typedef std::function<void(void)> DrawHook;
+
 class Scene
 {
 public:
@@ -14,16 +17,22 @@ public:
 	Scene(std::string alias, std::string path) 
 		: name(alias), filePath(path) {}
 	virtual ~Scene() {}
+	//setup
 	virtual void initialize() = 0;
+
+	//update
 	virtual void update(const float& dt) = 0;
 	virtual void fixedUpdate(const float& timestep) = 0;
-	virtual void predraw() = 0;
-	virtual void draw() = 0;
-	virtual void poll() = 0;
-	virtual void Inspect() = 0;
-};
 
+	//drawing
+	virtual void Render(Color& clearColor, DrawHook onInspect);
+	virtual void DrawWorld() = 0;
+	virtual void Inspect() = 0;
+	//event handling
+	virtual void poll() = 0;
+};
 typedef std::function<Scene* (std::string, std::string)>  SceneGenerator;
+
 
 struct SceneEntry
 {

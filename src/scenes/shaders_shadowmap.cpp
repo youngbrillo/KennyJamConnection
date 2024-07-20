@@ -16,7 +16,6 @@
 
 RenderTexture2D LoadShadowmapRenderTexture(int width, int height);
 void UnloadShadowmapRenderTexture(RenderTexture2D target);
-void DrawScene(Model cube, Model robot);
 
 class ShadowMapScene : public Scene
 {
@@ -103,8 +102,8 @@ public:
 	virtual void initialize();
 	virtual void update(const float& dt);
 	virtual void fixedUpdate(const float& timestep);
-	virtual void predraw();
-	virtual void draw();
+	virtual void Render(Color& clearColor, DrawHook onInspect) override;
+	virtual void DrawWorld();
 	virtual void poll();
 	virtual void Inspect() {};
 
@@ -157,13 +156,11 @@ void ShadowMapScene::fixedUpdate(const float& timestep)
 {
 }
 
-void ShadowMapScene::predraw()
+void ShadowMapScene::Render(Color& clearColor, DrawHook onInspect)
 {
-}
-
-void ShadowMapScene::draw()
-{
-
+	// Draw
+	//----------------------------------------------------------------------------------
+	BeginDrawing();
 	// First, render all objects into the shadowmap
 	// The idea is, we record all the objects' depths (as rendered from the light source's point of view) in a buffer
 	// Anything that is "visible" to the light is in light, anything that isn't is in shadow
@@ -179,6 +176,7 @@ void ShadowMapScene::draw()
 			lightView = rlGetMatrixModelview();
 			lightProj = rlGetMatrixProjection();
 			//DrawScene(cube, robot);
+			DrawWorld();
 		EndMode3D();
 	EndTextureMode();
 	Matrix lightViewProj = MatrixMultiply(lightView, lightProj);
@@ -195,11 +193,25 @@ void ShadowMapScene::draw()
 
 	BeginMode3D(cam);
 		// Draw the same exact things as we drew in the shadowmap!
-		DrawScene(cube, robot);
+		//DrawScene(cube, robot);
+		DrawWorld();
 	EndMode3D();
 
 	DrawText("Shadows in raylib using the shadowmapping algorithm!", GetScreenWidth() - 320, GetScreenHeight() - 20, 10, GRAY);
 	DrawText("Use the arrow keys to rotate the light!", 10, 10, 30, RED);
+
+
+
+	onInspect();
+	EndDrawing();
+}
+
+
+void ShadowMapScene::DrawWorld()
+{
+	DrawModelEx(cube, Vector3Zero(), Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3{ 20.0f, 1.0f, 20.0f }, BLUE);
+	DrawModelEx(cube, Vector3{ 1.5f, 1.0f, -1.5f }, Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3One(), WHITE);
+	DrawModelEx(robot, Vector3{ 0.0f, 0.5f, 0.0f }, Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3{ 1.0f, 1.0f, 1.0f }, RED);
 }
 
 void ShadowMapScene::poll()
@@ -255,13 +267,5 @@ void UnloadShadowmapRenderTexture(RenderTexture2D target)
 		rlUnloadFramebuffer(target.id);
 	}
 }
-
-void DrawScene(Model cube, Model robot)
-{
-	DrawModelEx(cube, Vector3Zero(), Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3{ 10.0f, 1.0f, 10.0f }, BLUE);
-	DrawModelEx(cube, Vector3{ 1.5f, 1.0f, -1.5f }, Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3One(), WHITE);
-	DrawModelEx(robot, Vector3{ 0.0f, 0.5f, 0.0f }, Vector3{ 0.0f, 1.0f, 0.0f }, 0.0f, Vector3{ 1.0f, 1.0f, 1.0f }, RED);
-}
-
 
 static int entry = SceneEntry::Register("raylib", "shaders shadow map", "", ShadowMapScene::Create);

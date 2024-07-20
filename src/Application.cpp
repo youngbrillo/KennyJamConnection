@@ -74,6 +74,7 @@ void App::FixedUpdate(const float& timestep)
 
 void App::Draw()
 {
+#if false
 	if (current_scene) current_scene->predraw();
 	BeginDrawing();
 	ClearBackground(settings.window_color);
@@ -84,6 +85,21 @@ void App::Draw()
 
 	inspector.render();
 	EndDrawing();
+#else
+	if (current_scene) current_scene->Render(settings.window_color, App::Debug);
+	else
+	{
+		BeginDrawing();
+			ClearBackground(settings.window_color);
+			settings.drawWhenNoSceneFound();
+			App::Debug();
+		EndDrawing();
+	}
+#endif
+}
+void App::Debug()
+{
+	inspector.render();
 }
 
 void App::Poll()

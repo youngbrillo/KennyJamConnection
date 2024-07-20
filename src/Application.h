@@ -24,6 +24,7 @@ private:
 	static void Update(const float& dt);
 	static void FixedUpdate(const float& timestep);
 	static void Draw();
+	static void Debug();
 	static void Poll();
 //public facing interface no 2.
 public:
