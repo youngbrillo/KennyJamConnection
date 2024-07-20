@@ -74,6 +74,7 @@ void App::FixedUpdate(const float& timestep)
 
 void App::Draw()
 {
+	if (current_scene) current_scene->predraw();
 	BeginDrawing();
 	ClearBackground(settings.window_color);
 	if (current_scene) 

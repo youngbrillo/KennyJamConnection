@@ -23,6 +23,7 @@ public:
 	virtual void initialize();
 	virtual void update(const float& dt);
 	virtual void fixedUpdate(const float& timestep);
+	virtual void predraw();
 	virtual void draw();
 	virtual void poll();
 	virtual void Inspect();

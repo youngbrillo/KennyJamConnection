@@ -73,6 +73,7 @@ void Settings::load(const char* path)
 
 void Settings::save(const char* path)
 {
+	window_color_code = ColorToInt(window_color);
 
 	std::ofstream file(path);
 
@@ -107,9 +108,14 @@ void Settings::tryAutoSave(const char* path)
 void Settings::poll()
 {
 }
-
+#include <imgui.h>
 void Settings::inspect()
 {
+	Vector4 wc = ColorNormalize(window_color);
+	if (ImGui::ColorEdit4("window color", &wc.x))
+	{
+		window_color = ColorFromNormalized(wc);
+	}
 }
 
 void Settings::drawWhenNoSceneFound()

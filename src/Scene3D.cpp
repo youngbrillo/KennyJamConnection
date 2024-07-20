@@ -36,7 +36,7 @@ void Scene3D::initialize()
 	{
 		script.run("onStart", this, &this->ecs);
 	}
-
+	//lightShader.Initialize(scene_camera);
 	//HideCursor();
 	EnableCursor();
 }
@@ -51,6 +51,11 @@ void Scene3D::update(const float& dt)
 void Scene3D::fixedUpdate(const float& timestep)
 {
 	core_module.fixedUpdate(timestep);
+}
+
+void Scene3D::predraw()
+{
+	//lightShader.Render(scene_camera);
 }
 
 void Scene3D::draw()
@@ -117,6 +122,7 @@ void Scene3D::Extend(lua_State* L)
 	App::Extend(L);
 	PostProcessor::Extend(L);
 	ModelManager::Extend(L);
+	//LightingShader::Extend(L);
 
 	luabridge::getGlobalNamespace(L)
 		.beginNamespace("flecs")
@@ -136,12 +142,13 @@ void Scene3D::Extend(lua_State* L)
 		.beginClass<Scene3D>("Scene3D")
 			.addData("scene_camera", &Scene3D::scene_camera)
 			.addData("camera_mode", &Scene3D::camera_mode)
-		.addData("core_module", &Scene3D::core_module)
-		.addData("draw_grid", &Scene3D::draw_grid)
-		.addData("grid_slices", &Scene3D::grid_slices)
-		.addData("grid_spacing", &Scene3D::grid_spacing)
-		.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
-		.addData("postProcessor", &Scene3D::postProcessor)
+			.addData("core_module", &Scene3D::core_module)
+			.addData("draw_grid", &Scene3D::draw_grid)
+			.addData("grid_slices", &Scene3D::grid_slices)
+			.addData("grid_spacing", &Scene3D::grid_spacing)
+			.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
+			.addData("postProcessor", &Scene3D::postProcessor)
+			//.addData("lightShader", &Scene3D::lightShader)
 		.endClass();
 }
 static int results = SceneManager::AddScenesFromDirectory("scripts/3D", "3D Scenes", Scene3D::Register);
