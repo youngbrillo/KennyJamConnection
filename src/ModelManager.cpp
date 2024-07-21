@@ -35,7 +35,7 @@ void ModelManager::Initialize(const char* vs, const char* fs, int resolution)
 		{ GenMeshSphere(0.5f, 16, 16), "sphere", &sphereId},
 		{ GenMeshCone(0.5f, 1.0f, 16), "cone", &coneId},
 		{ GenMeshTorus(0.4f, 1.0f, 16, 32), "torus", &torusId},
-		{ GenMeshPlane(1.0f, 1.0f, 2,2), "plane", &planeId}
+		{ GenMeshPlane(1.0f, 1.0f, 16,16), "plane", &planeId}
 	};
 
 
