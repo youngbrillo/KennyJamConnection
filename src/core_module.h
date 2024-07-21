@@ -20,7 +20,7 @@ public:
 
 protected:
 	flecs::system draw2Dsystem;
-	flecs::system draw3DCubes, draw3DSpheres, draw3DModels;
+	flecs::system draw3DModels;
 	flecs::system drawUIsystem;
 	flecs::system pollSystem;
 	flecs::system inspectSystem;

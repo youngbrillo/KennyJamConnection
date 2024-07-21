@@ -4,7 +4,6 @@
 #include "flecs.h"
 #include "core_module.h"
 #include "post_processor.h"
-#include "util/LightingSystem.h"
 
 class Scene3D : public Scene
 {
@@ -18,7 +17,7 @@ public:
 	int grid_slices = 10, grid_spacing = 1;
 	bool lock_cursor_to_screen = false;
 	PostProcessor postProcessor;
-	LightingSystem lighting;
+	bool draw_shadows = true;
 public:
 	Scene3D(std::string name, std::string path);
 	virtual ~Scene3D();

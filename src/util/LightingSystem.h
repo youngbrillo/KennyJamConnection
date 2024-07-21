@@ -14,7 +14,10 @@ public:
 	Color lightColor = WHITE;
 	Vector4 AmbientLight = { 0.1f, 0.1f, 0.1f, 1.0f };
 public:
-	LightingSystem() {};
+	LightingSystem() 
+	{
+	
+	};
 	~LightingSystem()
 	{
 		if (shadowMap.id > 0)
@@ -138,6 +141,15 @@ void LightingSystem::Inspect(const char* title)
 	if (ImGui::TreeNode(title))
 	{
 
+		if (ImGui::TreeNode("Camera3D"))
+		{
+			ImGui::DragFloat3("position", &camera.position.x);
+			ImGui::DragFloat3("target", &camera.target.x);
+			ImGui::SliderFloat3("up", &camera.up.x, -1, 1);
+			ImGui::SliderFloat("fov", &camera.fovy, -360, 360);
+			ImGui::SliderInt("projection", &camera.projection, CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC, camera.projection == 0 ? "PERSPECTIVE" : "ORTHOGRAPHIC");
+			ImGui::TreePop();
+		}
 		Vector4 lightColorNormalized = ColorNormalize(lightColor);
 		if (ImGui::ColorEdit4("Light Color", &lightColorNormalized.x))
 		{

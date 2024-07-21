@@ -23,6 +23,8 @@ Scene3D::~Scene3D()
 
 void Scene3D::initialize()
 {
+	ModelManager::Initialize("assets/shaders/shadowmap.vs", "assets/shaders/shadowmap.fs", 1028);
+
 	//set ecs modules
 	core_module = CoreModule(ecs);
 	//setup camera controller
@@ -32,18 +34,33 @@ void Scene3D::initialize()
 	//setup player
 
 	//load script
+
+	//add post processing effects
+
+	this->postProcessor.AddShader("assets/shaders/grayscale.fs");
+	this->postProcessor.AddShader("assets/shaders/posterization.fs");
+	this->postProcessor.AddShader("assets/shaders/dream_vision.fs");
+	this->postProcessor.AddShader("assets/shaders/pixelizer.fs");
+	this->postProcessor.AddShader("assets/shaders/cross_hatching.fs");
+	this->postProcessor.AddShader("assets/shaders/cross_stitching.fs");
+	this->postProcessor.AddShader("assets/shaders/predator.fs");
+	this->postProcessor.AddShader("assets/shaders/scanlines.fs");
+	this->postProcessor.AddShader("assets/shaders/fisheye.fs");
+	this->postProcessor.AddShader("assets/shaders/sobel.fs");
+	this->postProcessor.AddShader("assets/shaders/bloom.fs");
+	this->postProcessor.AddShader("assets/shaders/blur.fs");
+	this->postProcessor.current_shader = -1;
 	if (script.Initialize(this->filePath.c_str(), Scene3D::Extend))
 	{
 		script.run("onStart", this, &this->ecs);
 	}
-	lighting.Initialize("assets/shaders/shadowmap.vs", "assets/shaders/shadowmap.fs", 2048);
+	//ModelManager::lighting.Initialize("assets/shaders/shadowmap.vs", "assets/shaders/shadowmap.fs", 2048);
 	EnableCursor();
 }
 
 void Scene3D::update(const float& dt)
 {
 	UpdateCamera(&scene_camera, camera_mode);
-	lighting.Update(scene_camera, dt);
 	ecs.progress(dt);
 	core_module.update(dt);
 }
@@ -56,7 +73,11 @@ void Scene3D::fixedUpdate(const float& timestep)
 void Scene3D::Render(Color& clearColor, DrawHook onInspect)
 {
 	BeginDrawing();
-		lighting.DrawShadowMap(clearColor, std::bind(&Scene3D::DrawWorld, this));
+	
+	if (draw_shadows) {
+		ModelManager::lighting.DrawShadowMap(clearColor, std::bind(&Scene3D::DrawWorld, this));
+		ModelManager::lighting.Update(scene_camera, 0.0f);
+	}
 
 		postProcessor.ApplyEffect();
 			ClearBackground(clearColor);
@@ -72,9 +93,8 @@ void Scene3D::Render(Color& clearColor, DrawHook onInspect)
 
 void Scene3D::DrawWorld()
 {
-		if (draw_grid) DrawGrid(grid_slices, grid_spacing);
-		core_module.draw3D(scene_camera);
-	EndMode3D();
+	if (draw_grid) DrawGrid(grid_slices, grid_spacing);
+	core_module.draw3D(scene_camera);
 }
 
 void Scene3D::poll()
@@ -112,6 +132,7 @@ static const char* cam_modes[] = { "CAMERA_CUSTOM","CAMERA_FREE","CAMERA_ORBITAL
 #include <imgui.h>
 void Scene3D::Inspect()
 {
+	ImGui::Checkbox("draw shadows", &draw_shadows);
 	ImGui::SliderInt("camera mode", &camera_mode, CAMERA_CUSTOM, CAMERA_THIRD_PERSON, cam_modes[camera_mode]);
 
 	if (ImGui::TreeNode("Camera3D: main_camera"))
@@ -123,7 +144,7 @@ void Scene3D::Inspect()
 		ImGui::SliderInt("projection", &scene_camera.projection, CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC, scene_camera.projection == 0 ? "PERSPECTIVE" : "ORTHOGRAPHIC");
 		ImGui::TreePop();
 	}
-	lighting.Inspect();
+	ModelManager::lighting.Inspect();
 
 	core_module.InspectComponents();
 
@@ -172,7 +193,7 @@ void Scene3D::Extend(lua_State* L)
 			.addData("grid_spacing", &Scene3D::grid_spacing)
 			.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
 			.addData("postProcessor", &Scene3D::postProcessor)
-			//.addData("lightShader", &Scene3D::lightShader)
+			.addData("draw_shadows", &Scene3D::draw_shadows)
 		.endClass();
 }
 static int results = SceneManager::AddScenesFromDirectory("scripts/3D", "3D Scenes", Scene3D::Register);

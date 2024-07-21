@@ -173,4 +173,4 @@ int ThreeDeeScene::AddModel(Model model)
 	return model_list.size() - 1;
 }
 
-static int entry = SceneEntry::Register("3D II", "Shader Setup", "scripts/3D/world_one.lua", ThreeDeeScene::Create);
+//static int entry = SceneEntry::Register("3D II", "Shader Setup", "scripts/3D/world_one.lua", ThreeDeeScene::Create);

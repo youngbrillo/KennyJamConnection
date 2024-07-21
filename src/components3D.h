@@ -8,7 +8,7 @@ namespace core
 	{
 		Vector3 position = Vector3{ 0.0f, 0.0f, 0.0f };
 		Vector3 scale = Vector3{ 1.0f, 1.0f, 1.0f };
-		Vector3 rotationAxis = Vector3{ 0.0f, 0.0f, 0.0f };
+		Vector3 rotationAxis = Vector3{ 0.0f, 1.0f, 0.0f };
 		float rotationAngle;
 	};
 
@@ -16,15 +16,9 @@ namespace core
 	{
 		Color tint = WHITE;
 	};
-	//shapes
-	struct Cube{};
-	struct Sphere{
-		int rings = 8;
-		int slices = 8;
-	};
 	struct ObjectModel
 	{
-		Model model;
+		unsigned int mId = 0; //Model Manager: Model id;
 		bool wireFrame = false;
 		bool boundingBox = false;
 	};
