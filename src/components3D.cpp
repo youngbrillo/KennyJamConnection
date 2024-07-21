@@ -15,9 +15,7 @@ void core::Extend3Dcomponents(lua_State* L)
 			.addData("tint", &core::Material::tint)
 		.endClass()
 		.beginClass<core::ObjectModel>("ObjectModel")
-			//.addData("model", &core::ObjectModel::model)
-			.addData("wireFrame", &core::ObjectModel::wireFrame)
-			.addData("boundingBox", &core::ObjectModel::boundingBox)
+			.addData("id", &core::ObjectModel::mId)
 		.endClass()
 	.endNamespace();
 }

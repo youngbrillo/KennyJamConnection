@@ -19,8 +19,6 @@ namespace core
 	struct ObjectModel
 	{
 		unsigned int mId = 0; //Model Manager: Model id;
-		bool wireFrame = false;
-		bool boundingBox = false;
 	};
 
 

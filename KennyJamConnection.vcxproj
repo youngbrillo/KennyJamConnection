@@ -182,11 +182,16 @@
     <ClCompile Include="src\Inspector.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\ModelManager.cpp" />
+    <ClCompile Include="src\modules\jolt_module.cpp" />
+    <ClCompile Include="src\modules\marble_module.cpp" />
     <ClCompile Include="src\post_processor.cpp" />
     <ClCompile Include="src\raylib_script_extensions.cpp" />
     <ClCompile Include="src\Render3D.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Scene3D.cpp" />
+    <ClCompile Include="src\scenes\shaders_basic_lighting.cpp" />
+    <ClCompile Include="src\scenes\shaders_shadowmap.cpp" />
+    <ClCompile Include="src\scenes\ThreeDeeScene.cpp" />
     <ClCompile Include="src\Script.cpp" />
     <ClCompile Include="src\Settings.cpp" />
     <ClCompile Include="src\util\rlImGui.cpp" />
@@ -236,13 +241,18 @@
     <ClInclude Include="src\core_module.h" />
     <ClInclude Include="src\Inspector.h" />
     <ClInclude Include="src\ModelManager.h" />
+    <ClInclude Include="src\modules\jolt_module.h" />
+    <ClInclude Include="src\modules\marble_module.h" />
     <ClInclude Include="src\post_processor.h" />
     <ClInclude Include="src\raylib_script_extensions.h" />
     <ClInclude Include="src\Render3D.h" />
+    <ClInclude Include="src\rlights.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Scene3D.h" />
+    <ClInclude Include="src\scenes\ThreeDeeScene.h" />
     <ClInclude Include="src\Script.h" />
     <ClInclude Include="src\Settings.h" />
+    <ClInclude Include="src\util\LightingSystem.h" />
     <ClInclude Include="src\util\rlImGui.h" />
     <ClInclude Include="src\util\sajson.h" />
   </ItemGroup>

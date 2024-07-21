@@ -4,6 +4,8 @@
 #include "raylib_script_extensions.h"
 #include "components3D.h"
 #include "ModelManager.h"
+#include "modules/jolt_module.h"
+#include "modules/marble_module.h"
 
 Scene3D::Scene3D(std::string name, std::string path)
 	: Scene(name, path)
@@ -168,6 +170,8 @@ void Scene3D::Extend(lua_State* L)
 	PostProcessor::Extend(L);
 	ModelManager::Extend(L);
 	//LightingShader::Extend(L);
+	core::JoltModule::Extend(L);
+	marble::Module::Extend(L);
 
 	luabridge::getGlobalNamespace(L)
 		.beginNamespace("flecs")

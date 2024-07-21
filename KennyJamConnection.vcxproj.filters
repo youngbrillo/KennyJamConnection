@@ -207,11 +207,26 @@
     <ClCompile Include="src\Render3D.cpp">
       <Filter>Source Files\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\post_processor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ModelManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\src\managers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\post_processor.cpp">
+      <Filter>Source Files\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\shaders_basic_lighting.cpp">
+      <Filter>Source Files\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\shaders_shadowmap.cpp">
+      <Filter>Source Files\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scenes\ThreeDeeScene.cpp">
+      <Filter>Source Files\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\marble_module.cpp">
+      <Filter>Source Files\src\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modules\jolt_module.cpp">
+      <Filter>Source Files\src\modules</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -372,6 +387,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ModelManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rlights.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scenes\ThreeDeeScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\LightingSystem.h">
+      <Filter>Source Files\src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\marble_module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\modules\jolt_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
