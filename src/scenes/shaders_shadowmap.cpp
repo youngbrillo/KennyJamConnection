@@ -268,4 +268,4 @@ void UnloadShadowmapRenderTexture(RenderTexture2D target)
 	}
 }
 
-static int entry = SceneEntry::Register("raylib", "shaders shadow map", "", ShadowMapScene::Create);
+//static int entry = SceneEntry::Register("raylib", "shaders shadow map", "", ShadowMapScene::Create);
