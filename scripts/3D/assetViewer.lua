@@ -8,7 +8,7 @@ textures = {
 
 function onStart(scene, ecs)
     loadResources();
-    local s = 50;
+    local s = 250;
     local ground = core.AddModel(ecs, 0, 
         raylib.Vector3():set(0,-1,0), 
         raylib.Vector3():set(s, 0.5, s), 
@@ -26,7 +26,10 @@ function onStart(scene, ecs)
     -- scene.scene_camera.target:set(91, -28, 35);
 
     scene.scene_camera.position:set(-25, 10, 20);
+    scene.scene_camera.position:set(-9, 14, -40);
     scene.scene_camera.target:set(-8, 0, -4);
+    scene.camera_mode = 2
+    scene.enable_camera_controller = false;
 end
 
 function onEnd()
@@ -59,6 +62,9 @@ function LoadModels(scene, ecs)
     local x = start;
     local y = 2;
     local ii = 1;
+
+    local rc_index = 7;
+
     for i = 6, ModelManager.GetModelCount()-1, 1 do
         local mod = ModelManager.GetModel(i);
         -- mod:AddTexture(textures[1].texture, 0,0);
@@ -70,8 +76,16 @@ function LoadModels(scene, ecs)
                 raylib.Color():set(0xffffffff)
             );
 
-            scene.physics:AddBoxBody(ecs, e, false);
+            -- scene.physics:AddBoxBody(ecs, e, false);
+            scene.physics:AddBoxBodyEX(e, 1, 0.5, 3, false);
 
+            if rc_index == i then
+
+                local vc = core.AttachRigidBodyVehicleController(e, 20, 8);
+                vc.brake_key = 264;
+                print "Attached Vechicle controller!"
+
+            end
         end
         ii = ii + 1;
         x = x + 1 + spacing;
@@ -80,5 +94,7 @@ function LoadModels(scene, ecs)
             z = z + 1 + spacing;         
             ii = 1;   
         end        
+
+
     end
 end

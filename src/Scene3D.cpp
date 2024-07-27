@@ -61,7 +61,8 @@ void Scene3D::initialize()
 
 void Scene3D::update(const float& dt)
 {
-	UpdateCamera(&scene_camera, camera_mode);
+	if(enable_camera_controller)
+		UpdateCamera(&scene_camera, camera_mode);
 	ecs.progress(dt);
 	core_module.update(dt);
 }
@@ -112,7 +113,7 @@ void Scene3D::poll()
 			camera_mode = CAMERA_CUSTOM;
 		}
 	}
-	else if  (IsKeyReleased(KEY_TAB) && !IsKeyDown(KEY_LEFT_SHIFT))
+	else if  (IsKeyReleased(KEY_TAB) && !IsKeyDown(KEY_LEFT_SHIFT) && enable_camera_controller)
 	{
 		lock_cursor_to_screen = !lock_cursor_to_screen;
 		if (lock_cursor_to_screen)
@@ -198,6 +199,8 @@ void Scene3D::Extend(lua_State* L)
 			.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
 			.addData("postProcessor", &Scene3D::postProcessor)
 			.addData("draw_shadows", &Scene3D::draw_shadows)
+			.addData("enable_camera_controller", &Scene3D::enable_camera_controller)
+
 			.addData("physics", &Scene3D::physics)
 		.endClass();
 }

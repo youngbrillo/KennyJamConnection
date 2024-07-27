@@ -14,6 +14,7 @@ public:
 	flecs::world ecs;
 	CoreModule core_module;
 	int camera_mode = CAMERA_CUSTOM; 
+	bool enable_camera_controller = true;
 	bool draw_grid = false;
 	int grid_slices = 10, grid_spacing = 1;
 	bool lock_cursor_to_screen = false;
