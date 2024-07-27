@@ -40,9 +40,6 @@
     <Filter Include="Source Files\src\managers">
       <UniqueIdentifier>{c772f2f1-a114-4d09-b250-b21acc6162f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Jolt">
-      <UniqueIdentifier>{66f11d2c-c642-4a59-ad08-02971d44f7ae}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Main.cpp">
@@ -228,7 +225,7 @@
     <ClCompile Include="src\modules\marble_module.cpp">
       <Filter>Source Files\src\modules</Filter>
     </ClCompile>
-    <ClCompile Include="src\modules\jolt_module.cpp">
+    <ClCompile Include="src\modules\physics3d_module.cpp">
       <Filter>Source Files\src\modules</Filter>
     </ClCompile>
   </ItemGroup>
@@ -404,7 +401,7 @@
     <ClInclude Include="src\modules\marble_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\modules\jolt_module.h">
+    <ClInclude Include="src\modules\physics3d_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

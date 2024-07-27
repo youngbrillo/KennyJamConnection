@@ -108,12 +108,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)flecs;$(ProjectDir)imgui;$(ProjectDir)lua;$(ProjectDir)Jolt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)flecs;$(ProjectDir)imgui;$(ProjectDir)lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>box2d.lib;freetyped.lib;glfw3.lib;raylib.lib;WinMM.Lib;Jolt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>box2d.lib;freetyped.lib;glfw3.lib;raylib.lib;WinMM.Lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,7 +183,7 @@
     <ClCompile Include="src\Inspector.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\ModelManager.cpp" />
-    <ClCompile Include="src\modules\jolt_module.cpp" />
+    <ClCompile Include="src\modules\physics3d_module.cpp" />
     <ClCompile Include="src\modules\marble_module.cpp" />
     <ClCompile Include="src\post_processor.cpp" />
     <ClCompile Include="src\raylib_script_extensions.cpp" />
@@ -241,7 +242,7 @@
     <ClInclude Include="src\core_module.h" />
     <ClInclude Include="src\Inspector.h" />
     <ClInclude Include="src\ModelManager.h" />
-    <ClInclude Include="src\modules\jolt_module.h" />
+    <ClInclude Include="src\modules\physics3d_module.h" />
     <ClInclude Include="src\modules\marble_module.h" />
     <ClInclude Include="src\post_processor.h" />
     <ClInclude Include="src\raylib_script_extensions.h" />

@@ -4,6 +4,7 @@
 #include "flecs.h"
 #include "core_module.h"
 #include "post_processor.h"
+#include "modules/physics3d_module.h"
 
 class Scene3D : public Scene
 {
@@ -18,6 +19,7 @@ public:
 	bool lock_cursor_to_screen = false;
 	PostProcessor postProcessor;
 	bool draw_shadows = true;
+	core::Physics3D physics;
 public:
 	Scene3D(std::string name, std::string path);
 	virtual ~Scene3D();

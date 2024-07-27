@@ -4,7 +4,6 @@
 #include "raylib_script_extensions.h"
 #include "components3D.h"
 #include "ModelManager.h"
-#include "modules/jolt_module.h"
 #include "modules/marble_module.h"
 
 Scene3D::Scene3D(std::string name, std::string path)
@@ -32,7 +31,7 @@ void Scene3D::initialize()
 	//setup camera controller
 
 	//setup physics
-
+	physics.initialize(ecs);
 	//setup player
 
 	//load script
@@ -69,6 +68,7 @@ void Scene3D::update(const float& dt)
 
 void Scene3D::fixedUpdate(const float& timestep)
 {
+	physics.fixedUpdate(timestep);
 	core_module.fixedUpdate(timestep);
 }
 
@@ -97,12 +97,13 @@ void Scene3D::DrawWorld()
 {
 	if (draw_grid) DrawGrid(grid_slices, grid_spacing);
 	core_module.draw3D(scene_camera);
+	physics.debugRender();
 }
 
 void Scene3D::poll()
 {
 	core_module.pollEvents();
-
+	physics.poll();
 	if (IsKeyReleased(KEY_TAB) && IsKeyDown(KEY_LEFT_SHIFT))
 	{
 		camera_mode++;
@@ -147,9 +148,8 @@ void Scene3D::Inspect()
 		ImGui::TreePop();
 	}
 	ModelManager::lighting.Inspect();
-
+	physics.inspect();
 	core_module.InspectComponents();
-
 }
 
 flecs::entity create_entity(flecs::world* world)
@@ -170,7 +170,7 @@ void Scene3D::Extend(lua_State* L)
 	PostProcessor::Extend(L);
 	ModelManager::Extend(L);
 	//LightingShader::Extend(L);
-	core::JoltModule::Extend(L);
+	core::Physics3D::Extend(L);
 	marble::Module::Extend(L);
 
 	luabridge::getGlobalNamespace(L)
@@ -198,6 +198,7 @@ void Scene3D::Extend(lua_State* L)
 			.addData("lock_cursor_to_screen", &Scene3D::lock_cursor_to_screen)
 			.addData("postProcessor", &Scene3D::postProcessor)
 			.addData("draw_shadows", &Scene3D::draw_shadows)
+			.addData("physics", &Scene3D::physics)
 		.endClass();
 }
 static int results = SceneManager::AddScenesFromDirectory("scripts/3D", "3D Scenes", Scene3D::Register);

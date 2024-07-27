@@ -11,35 +11,41 @@ function onStart(scene, ecs)
     math.random(os.time());
     -- local color = raylib.Color()
 
-    -- core.AddCube(ecs, raylib.Vector3():set(0,0.5,0),raylib.Vector3():set(1,1,1), raylib.Color():set(0xffffffff));
 
     local bounds = 10;
+    local ground = core.AddCube(ecs, raylib.Vector3():set(0,-2.0,0),raylib.Vector3():set(bounds*3,0.5,bounds*3), raylib.Color():set(0x5e5e5e7c));
+    scene.physics:AddBoxBody(ecs, ground, true);
+
     for i = 1, 50, 1 do
         local x = math.random(-bounds, bounds) + math.random()
-        local y = math.random(-bounds, bounds) + math.random()
+        local y = math.random(0, bounds*2) + math.random()
         local z = math.random(-bounds, bounds) + math.random()
         local color = raylib.Color();
             color.r = math.random(0, 255)
             color.g = math.random(0, 255)
             color.b = math.random(0, 255)
             color.a = math.random(75, 255)
-        core.AddCube(ecs, 
+        local e = core.AddCube(ecs, 
             raylib.Vector3():set(x,y,z),
             raylib.Vector3():set(1,1,1), 
            color
         );
+        scene.physics:AddBoxBody(ecs, e, false);
+
     end
 
     for i = 1, 50, 1 do
         local x = math.random(-bounds, bounds)
-        local y = math.random(-bounds, bounds)
+        local y = math.random(0, bounds *2)
         local z = math.random(-bounds, bounds)
         local color = raylib.Color();
             color.r = math.random(0, 255)
             color.g = math.random(0, 255)
             color.b = math.random(0, 255)
             color.a = math.random(75, 255)
-        core.AddSphere(ecs, raylib.Vector3():set(x,y,z),1.0, color);
+        local e = core.AddSphere(ecs, raylib.Vector3():set(x,y,z),1.0, color);
+        scene.physics:AddSphereBody(ecs, e);
+
     end
 
     -- LoadModels(ecs)
