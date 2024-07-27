@@ -80,18 +80,45 @@ void update_rigidbody(core::RigidBody3D& rb, core::Transform3D& tr)
     tr.rotationAngle = angle * RAD2DEG;
 }
 
+void pollVehicleController(core::RigidBodyVehicleController& controller)
+{
+    controller.forwardDirection = (IsKeyDown(controller.accel_key) ? 1 : 0)         - (IsKeyDown(controller.brake_key) ? 1 : 0);
+    controller.turningDirection = (IsKeyDown(controller.left_turn_key) ? 1 : 0)    - (IsKeyDown(controller.right_turn_key) ? 1 : 0);
+
+    //calculate forward vector here?
+
+}
+void moveVehicle(const core::RigidBodyVehicleController& controller, core::RigidBody3D& rigidbody)
+{
+    rp3d::Vector3 torque, velocity;
+
+    if (controller.turningDirection == controller.forwardDirection && controller.forwardDirection == 0)
+        return;
+    torque = controller.torque;
+    torque *= controller.torquePow * controller.turningDirection;
+
+    velocity = controller.velocity;
+    velocity *= controller.speed * controller.forwardDirection;
+
+    rigidbody.body->applyLocalTorque(torque);
+    rigidbody.body->applyLocalForceAtCenterOfMass(velocity);
+
+}
 void core::Physics3D::initialize(flecs::world& ecs)
 {
     //ecs.observer<core::ObjectModel, core::Transform3D>().event(flecs::OnSet)
     //    .each([this](flecs::entity e, core::ObjectModel& mod, core::Transform3D& transform) {add_rigidbody(*this->factory, this->world, e, mod, transform); });
 
     rigidbody_sync = ecs.system<core::RigidBody3D, core::Transform3D>().kind(0).each(update_rigidbody);
+    vehicle_polling = ecs.system<core::RigidBodyVehicleController>().kind(0).each(pollVehicleController);
+    vehicle_movement = ecs.system<core::RigidBodyVehicleController, core::RigidBody3D>().kind(0).each(moveVehicle);
 
 }
 
 
 void core::Physics3D::fixedUpdate(const float& timestep)
 {
+    vehicle_movement.run();
     world->update(timestep);
     rigidbody_sync.run();
 }
@@ -102,19 +129,38 @@ void core::Physics3D::debugRender()
 
 void core::Physics3D::poll()
 {
+    vehicle_polling.run();
 }
 
 void core::Physics3D::inspect(const char* title)
 {
 }
+core::RigidBodyVehicleController* AttachRigidBodyVehicleController(flecs::entity e, float speed, float torque)
+{
+    e.set<core::RigidBodyVehicleController>({speed, torque});
 
+    return e.get_mut<core::RigidBodyVehicleController>();
+}
 void core::Physics3D::Extend(lua_State* L)
 {
     luabridge::getGlobalNamespace(L)
-        .beginClass<core::Physics3D>("Physics3D")
-            .addFunction("AddBoxBody", &core::Physics3D::AddBoxBody)
-            .addFunction("AddSphereBody", &core::Physics3D::AddSphereBody)
-        .endClass();
+        .beginNamespace("core")
+            .addFunction("AttachRigidBodyVehicleController", AttachRigidBodyVehicleController)
+            .beginClass<core::RigidBodyVehicleController>("RigidBodyVehicleController")
+                .addData("speed", &core::RigidBodyVehicleController::speed)
+                .addData("torquePow", &core::RigidBodyVehicleController::torquePow)
+                .addData("accel_key", &core::RigidBodyVehicleController::accel_key)
+                .addData("brake_key", &core::RigidBodyVehicleController::brake_key)
+                .addData("left_turn_key", &core::RigidBodyVehicleController::left_turn_key)
+                .addData("right_turn_key", &core::RigidBodyVehicleController::right_turn_key)
+                //.addData("speed", &core::RigidBodyVehicleController::speed)
+            .endClass()
+            .beginClass<core::Physics3D>("Physics3D")
+                .addFunction("AddBoxBody", &core::Physics3D::AddBoxBody)
+                .addFunction("AddBoxBodyEX", &core::Physics3D::AddBoxBodyEX)
+                .addFunction("AddSphereBody", &core::Physics3D::AddSphereBody)
+            .endClass()
+        .endNamespace();
 }
 
 void core::Physics3D::AddBody(core::RigidBody3D& rigidbody)
@@ -125,6 +171,17 @@ void core::Physics3D::AddBoxBody(flecs::world* ecs, flecs::entity e, bool isStat
 {
     //get transform
     core::Transform3D* t3d = e.get_mut<core::Transform3D>();
+    rp3d::Vector3 half_extents = rp3d::Vector3(t3d->scale.x * 0.5f, t3d->scale.y * 0.5f, t3d->scale.z * 0.5f);
+
+    AddBoxBodyEX(e, half_extents.x, half_extents.y, half_extents.z, isStatic);
+  
+}
+
+void core::Physics3D::AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz, bool isStatic)
+{
+
+    //get transform
+    core::Transform3D* t3d = e.get_mut<core::Transform3D>();
 
     rp3d::Vector3 position(t3d->position.x, t3d->position.y, t3d->position.z);
     rp3d::Quaternion orientation = rp3d::Quaternion::identity();
@@ -132,7 +189,7 @@ void core::Physics3D::AddBoxBody(flecs::world* ecs, flecs::entity e, bool isStat
 
 
     rp3d::BodyType btype = rp3d::BodyType::DYNAMIC;
-    if (isStatic) 
+    if (isStatic)
         btype = rp3d::BodyType::STATIC;
     //set rigidbody
     rp3d::RigidBody* rigidbody = world->createRigidBody(transform);
@@ -141,18 +198,19 @@ void core::Physics3D::AddBoxBody(flecs::world* ecs, flecs::entity e, bool isStat
     rb.body = rigidbody;
     //set collision shape
     rp3d::CollisionShape* shape;
-    rp3d::Vector3 half_extents = rp3d::Vector3(t3d->scale.x * 0.5f, t3d->scale.y * 0.5f, t3d->scale.z * 0.5f);
+    rp3d::Vector3 half_extents = rp3d::Vector3(sx, sy, sz);
     shape = factory->createBoxShape(half_extents);
     //set collider
     transform = rp3d::Transform::identity();
     rp3d::Collider* collider = rb.body->addCollider(shape, transform);
     rp3d::Material mat = collider->getMaterial();
-        mat.setBounciness(rb.restitution);
-        mat.setFrictionCoefficient(rb.friction);
+    mat.setBounciness(rb.restitution);
+    mat.setFrictionCoefficient(rb.friction);
     collider->setMaterial(mat);
 
     //set rigidbody component
     e.set<core::RigidBody3D>(rb);
+
 }
 
 void core::Physics3D::AddSphereBody(flecs::world* ecs, flecs::entity e)
