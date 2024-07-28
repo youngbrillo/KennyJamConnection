@@ -29,9 +29,9 @@ void add_rigidbody(rp3d::PhysicsCommon& factory, rp3d::PhysicsWorld* world, flec
     rp3d::Transform transform(position, orientation);
 
     core::RigidBody3D rb;
-    rb.bodyType = mod.mId == ModelManager::planeId ? (int)rp3d::BodyType::STATIC : (int)rp3d::BodyType::DYNAMIC;
+    rp3d::BodyType bt = mod.mId == ModelManager::planeId ? rp3d::BodyType::STATIC : rp3d::BodyType::DYNAMIC;
     rp3d::RigidBody* rigidbody = world->createRigidBody(transform);
-    rigidbody->setType((rp3d::BodyType)rb.bodyType);
+    rigidbody->setType(bt);
     //rigidbody->setType(rp3d::BodyType::DYNAMIC);
 
     rb.body = rigidbody;
@@ -52,10 +52,10 @@ void add_rigidbody(rp3d::PhysicsCommon& factory, rp3d::PhysicsWorld* world, flec
         shape = factory.createBoxShape(half_extents);
     }
     transform = rp3d::Transform::identity();
-    rp3d::Collider* collider =  rb.body->addCollider(shape, transform);
-    rp3d::Material mat = collider->getMaterial();
-    mat.setBounciness(rb.restitution);
-    mat.setFrictionCoefficient(rb.friction);
+    rb.collider =  rb.body->addCollider(shape, transform);
+    rp3d::Material mat = rb.collider->getMaterial();
+    mat.setBounciness(0.4f);
+    mat.setFrictionCoefficient(0.4f);
 
     //collider->setMaterial(mat);
     //collider->setIsTrigger(rb.isSensor);
@@ -155,29 +155,48 @@ void core::Physics3D::Extend(lua_State* L)
                 .addData("right_turn_key", &core::RigidBodyVehicleController::right_turn_key)
                 //.addData("speed", &core::RigidBodyVehicleController::speed)
             .endClass()
+            .beginClass<core::RigidBody3D>("RigidBody3D")
+                .addData("body", &core::RigidBody3D::body)
+                .addData("collider", &core::RigidBody3D::collider)
+            .endClass()
             .beginClass<core::Physics3D>("Physics3D")
                 .addFunction("AddBoxBody", &core::Physics3D::AddBoxBody)
                 .addFunction("AddBoxBodyEX", &core::Physics3D::AddBoxBodyEX)
                 .addFunction("AddSphereBody", &core::Physics3D::AddSphereBody)
             .endClass()
-        .endNamespace();
+        .endNamespace()
+        .beginNamespace("rp3d")
+            .beginClass<rp3d::RigidBody>("RigidBody")
+                .addFunction("applyLocalForceAtLocalPosition", &rp3d::RigidBody::applyLocalForceAtLocalPosition)
+            .endClass()
+            .beginClass<rp3d::Collider>("Collider")
+                .addFunction("getMaterial", &rp3d::Collider::getMaterial)
+            .endClass()
+            //.beginClass<rp3d::decimal>("decimal").endClass()
+            .beginClass<rp3d::Material>("Material")
+                .addProperty("bounciness", &rp3d::Material::getBounciness, &rp3d::Material::setBounciness)
+                .addProperty("friction", &rp3d::Material::getFrictionCoefficient, &rp3d::Material::setFrictionCoefficient)
+                .addProperty("density", &rp3d::Material::getMassDensity, &rp3d::Material::setMassDensity)
+            .endClass()
+        .endNamespace()
+        ;
 }
 
 void core::Physics3D::AddBody(core::RigidBody3D& rigidbody)
 {
 }
 
-void core::Physics3D::AddBoxBody(flecs::world* ecs, flecs::entity e, bool isStatic)
+core::RigidBody3D* core::Physics3D::AddBoxBody(flecs::world* ecs, flecs::entity e, bool isStatic)
 {
     //get transform
     core::Transform3D* t3d = e.get_mut<core::Transform3D>();
     rp3d::Vector3 half_extents = rp3d::Vector3(t3d->scale.x * 0.5f, t3d->scale.y * 0.5f, t3d->scale.z * 0.5f);
 
-    AddBoxBodyEX(e, half_extents.x, half_extents.y, half_extents.z, isStatic);
+    return AddBoxBodyEX(e, half_extents.x, half_extents.y, half_extents.z, isStatic);
   
 }
 
-void core::Physics3D::AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz, bool isStatic)
+core::RigidBody3D* core::Physics3D::AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz, bool isStatic)
 {
 
     //get transform
@@ -202,18 +221,19 @@ void core::Physics3D::AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz
     shape = factory->createBoxShape(half_extents);
     //set collider
     transform = rp3d::Transform::identity();
-    rp3d::Collider* collider = rb.body->addCollider(shape, transform);
-    rp3d::Material mat = collider->getMaterial();
-    mat.setBounciness(rb.restitution);
-    mat.setFrictionCoefficient(rb.friction);
-    collider->setMaterial(mat);
+    rb.collider = rb.body->addCollider(shape, transform);
+    rp3d::Material& mat = rb.collider->getMaterial();
+    mat.setBounciness(0.4f);
+    mat.setFrictionCoefficient(0.4f);
+    rb.collider->setMaterial(mat);
 
     //set rigidbody component
     e.set<core::RigidBody3D>(rb);
 
+    return e.get_mut<core::RigidBody3D>();
 }
 
-void core::Physics3D::AddSphereBody(flecs::world* ecs, flecs::entity e)
+core::RigidBody3D* core::Physics3D::AddSphereBody(flecs::world* ecs, flecs::entity e)
 {
     //get transform
     core::Transform3D* t3d = e.get_mut<core::Transform3D>();
@@ -234,13 +254,14 @@ void core::Physics3D::AddSphereBody(flecs::world* ecs, flecs::entity e)
     shape = factory->createSphereShape(rp3d::decimal(t3d->scale.x * 0.5f));
     //set collider
     transform = rp3d::Transform::identity();
-    rp3d::Collider* collider = rb.body->addCollider(shape, transform);
-    rp3d::Material mat = collider->getMaterial();
-    mat.setBounciness(rb.restitution);
-    mat.setFrictionCoefficient(rb.friction);
-    collider->setMaterial(mat);
+    rb.collider = rb.body->addCollider(shape, transform);
+    rp3d::Material& mat = rb.collider->getMaterial();
+    mat.setBounciness(0.4f);
+    mat.setFrictionCoefficient(0.4f);
+    rb.collider->setMaterial(mat);
 
     //set rigidbody component
     e.set<core::RigidBody3D>(rb);
+    return e.get_mut<core::RigidBody3D>();
 }
 

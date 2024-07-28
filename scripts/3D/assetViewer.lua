@@ -77,14 +77,16 @@ function LoadModels(scene, ecs)
             );
 
             -- scene.physics:AddBoxBody(ecs, e, false);
-            scene.physics:AddBoxBodyEX(e, 1, 0.5, 3, false);
+            local rb = scene.physics:AddBoxBodyEX(e, 1, 0.5, 3, false);
 
             if rc_index == i then
 
                 local vc = core.AttachRigidBodyVehicleController(e, 20, 8);
                 vc.brake_key = 264;
                 print "Attached Vechicle controller!"
-
+                local material = rb.collider:getMaterial();
+                material.friction = 0.2;
+                material.bounciness = 0.75;
             end
         end
         ii = ii + 1;

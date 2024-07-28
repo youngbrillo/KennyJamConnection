@@ -6,12 +6,21 @@
 
 namespace core
 {
+	struct RigidBodySettings
+	{
+		float restitution = 0.4f;
+		float friction = 0.3f;
+		bool trigger = false;
+		bool isStatic = false;
+		bool isKinematic = false;
+	};
+
 	struct RigidBody3D
 	{
-		int bodyType = (int)rp3d::BodyType::DYNAMIC;
-		bool isSensor = false;
-		float restitution = 0.4f, friction = 0.3f;
+		//int bodyType = (int)rp3d::BodyType::DYNAMIC;
+		//float restitution = 0.4f, friction = 0.3f;
 		rp3d::RigidBody* body = nullptr;
+		rp3d::Collider* collider = nullptr;
 	};
 	struct RigidBodyVehicleController
 	{
@@ -42,9 +51,9 @@ namespace core
 	public:
 		//public facing API methods
 		void AddBody(core::RigidBody3D& rigidbody);
-		void AddBoxBody(flecs::world* world, flecs::entity e, bool isStatic);
-		void AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz, bool isStatic);
-		void AddSphereBody(flecs::world* world, flecs::entity e);
+		core::RigidBody3D* AddBoxBody(flecs::world* world, flecs::entity e, bool isStatic);
+		core::RigidBody3D* AddBoxBodyEX(flecs::entity e, float sx, float sy, float sz, bool isStatic);
+		core::RigidBody3D* AddSphereBody(flecs::world* world, flecs::entity e);
 	};
 }
 
